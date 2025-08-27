@@ -17,5 +17,5 @@
         "ms-python.python",
         "golang.go"
     ],
-    "postCreateCommand": "go version && python --version && pip install uv"
+    "postCreateCommand": "go version && python --version && pip install uv && go install github.com/spf13/cobra-cli@latest"
 }
