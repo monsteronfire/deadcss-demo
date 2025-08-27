@@ -1,0 +1,21 @@
+{
+    "name": "Go & Python Dev Container",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "features": {
+        "ghcr.io/devcontainers/features/go:1": {
+            "version": "1.25.0"
+        },
+        "ghcr.io/devcontainers/features/python:1": {
+            "version": "3.13.7"
+        }
+    },
+    "settings": {
+        "go.gopath": "/workspace/go",
+        "python.pythonPath": "/usr/local/bin/python3"
+    },
+    "extensions": [
+        "ms-python.python",
+        "golang.go"
+    ],
+    "postCreateCommand": "go version && python --version && pip install uv"
+}
