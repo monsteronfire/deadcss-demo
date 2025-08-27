@@ -1,11 +1,11 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/spf13/cobra"
 )
@@ -21,7 +21,8 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("scan called")
+		// fmt.Println("scan called")
+		testPythonService()
 	},
 }
 
@@ -37,4 +38,19 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// scanCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+// Test if Python service is running
+func testPythonService() error {
+	resp, err := http.Get("http://localhost:8000/health")
+	if err != nil {
+		fmt.Println("Error connecting to Python AI service:", err)
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == 200 {
+		fmt.Println("Python AI service is running!")
+	}
+	return nil
 }
