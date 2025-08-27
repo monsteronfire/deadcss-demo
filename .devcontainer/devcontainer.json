@@ -17,5 +17,9 @@
         "ms-python.python",
         "golang.go"
     ],
-    "postCreateCommand": "go version && python --version && pip install uv && go install github.com/spf13/cobra-cli@latest"
+    "postCreateCommand": "go version && python --version && pip install uv && go install github.com/spf13/cobra-cli@latest",
+    "forwardPorts": [
+        8000,
+    ],
+    "remoteUser": "root"
 }
