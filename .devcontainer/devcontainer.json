@@ -19,7 +19,7 @@
         "ms-python.python",
         "golang.go"
     ],
-    "postCreateCommand": "go version && python --version",
+    "postCreateCommand": "go version && python --version && cd python && uv sync",
     "forwardPorts": [
         8000,
     ],
