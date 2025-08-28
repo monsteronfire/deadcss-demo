@@ -1,5 +1,5 @@
 from typing import TypedDict
-from langgraph.graph import StateGraph, Graph, END
+from langgraph.graph import StateGraph, END
 
 
 class GraphState(TypedDict):
@@ -24,7 +24,7 @@ def display_node(state: GraphState) -> dict:
     return {}
 
 
-def create_graph() -> Graph:
+def create_graph():
     # Init a graph workflow
     workflow = StateGraph(GraphState)
 
@@ -43,7 +43,7 @@ def create_graph() -> Graph:
     return workflow.compile()
 
 
-def analyse_css():
+async def analyse_css(request: dict):
     # Set up initial state
     initial_state = {}
 

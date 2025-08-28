@@ -4,6 +4,8 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -42,12 +44,32 @@ func init() {
 
 // Test if Python service is running
 func testPythonService() error {
-	resp, err := http.Get("http://localhost:8000/health")
+	// resp, err := http.Get("http://localhost:8000/health")
+	payload := map[string]interface{}{
+		"css_content":   "body { color: red; }",
+		"project_files": []string{"index.html", "styles.css"},
+	}
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		fmt.Println("Error marshaling JSON:", err)
+		return err
+	}
+
+	resp, err := http.Post(
+		"http://localhost:8000/api/analyse-css",
+		"application/json",
+		bytes.NewBuffer(jsonData),
+	)
+
 	if err != nil {
 		fmt.Println("Error connecting to Python AI service:", err)
 		return err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode == 404 {
+		fmt.Println("Python AI service is not found!")
+	}
 
 	if resp.StatusCode == 200 {
 		fmt.Println("Python AI service is running!")
