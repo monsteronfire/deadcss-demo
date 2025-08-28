@@ -7,7 +7,9 @@
         },
         "ghcr.io/devcontainers/features/python:1": {
             "version": "3.13.7"
-        }
+        },
+        "ghcr.io/va-h/devcontainers-features/uv:1": {},
+        "ghcr.io/mrsimonemms/devcontainers/cobra-cli:1": {}
     },
     "settings": {
         "go.gopath": "/workspace/go",
@@ -17,7 +19,7 @@
         "ms-python.python",
         "golang.go"
     ],
-    "postCreateCommand": "go version && python --version && pip install uv && go install github.com/spf13/cobra-cli@latest",
+    "postCreateCommand": "go version && python --version",
     "forwardPorts": [
         8000,
     ],
