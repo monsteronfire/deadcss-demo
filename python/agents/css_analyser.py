@@ -1,5 +1,6 @@
 from typing import TypedDict
 from langgraph.graph import StateGraph, END
+import ollama
 
 
 class GraphState(TypedDict):
@@ -15,6 +16,21 @@ def welcome_node(state: GraphState) -> dict:
 
 def question_node(state: GraphState) -> dict:
     state["question"] = "How's it going?"
+
+    prompt = f"""
+    """
+
+    try:
+        response = ollama.chat(
+            model='',
+            messages=[{
+                'role': 'user',
+                'content': prompt
+            }]
+        )
+    except Exception as e:
+        print("Ollama error: {e}")
+
     return state
 
 
