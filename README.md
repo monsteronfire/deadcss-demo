@@ -37,3 +37,14 @@ Ollama should be installed on your system. The project uses the `codellama` mode
 ```
 ollama run codellama
 ```
+
+To download the python variant, you can run the following command
+```
+ollama pull codellama:python
+ollama run codellama:python
+```
+
+This project runs within a devcontainer, so the `ollama` CLI tool cannot be used from within the devcontainer. Instead, you can use the API to access the host machine's ollama installation. For instance, to see the version, you can run
+```
+curl http://host.docker.internal:11434/api/version
+```
