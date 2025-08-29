@@ -20,3 +20,20 @@ To check if it has been installed correctly, run:
 ```bash
 cobra-cli help
 ```
+
+### Services
+The python API needs to be running before it is accessible to the CLI or other tools. In one terminal window
+```
+cd python
+uv run main.py
+```
+
+To run the `scan` command of the CLI, from project root
+```
+go run cmd/deadcss/main.go scan
+```
+
+Ollama should be installed on your system. The project uses the `codellama` model. You can download it via the `ollama` CLI tool
+```
+ollama run codellama
+```
