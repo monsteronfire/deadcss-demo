@@ -3,11 +3,13 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
 
 const ollamaBaseURL = "http://host.docker.internal:11434/api/"
+const modelName = "hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:latest"
 
 type OllamaRequest struct {
 	Model  string `json:"model"`
@@ -17,7 +19,7 @@ type OllamaRequest struct {
 
 type OllamaResponse struct {
 	Response string `json:"response"`
-	Done     string `json:"done"`
+	Done     bool   `json:"done"`
 }
 
 // Custom type representing the LSP server
@@ -34,7 +36,7 @@ func NewLSPServer() *LSPServer {
 
 func (s *LSPServer) callOllama(prompt string) (string, error) {
 	requestBody := OllamaRequest{
-		Model:  "Llama-3.2-1B-Instruct-GGUF",
+		Model:  modelName,
 		Prompt: prompt,
 		Stream: false,
 	}
@@ -66,6 +68,17 @@ func (s *LSPServer) callOllama(prompt string) (string, error) {
 
 func (s *LSPServer) serve() {
 	log.Println("LSP Server is now serving...")
+
+	functionName := "handleHover"
+
+	prompt := fmt.Sprintf("Write a creative haiku inspired by a programming function called '%s'. Do not mention, reference, or use the function name or any part of it in the haiku. Instead, capture the essence or purpose of what such a function might do in code, using poetic and programming-themed language. Only return the haiku, nothing else. If you use the function name or any part of it, your answer is incorrect.", functionName)
+
+	haiku, err := s.callOllama(prompt)
+	if err != nil {
+		log.Fatalf("Error calling Ollama API: %v", err)
+	}
+
+	log.Println(haiku)
 }
 
 func main() {
