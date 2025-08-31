@@ -1,27 +1,35 @@
 {
-    "name": "Go & Python Dev Container",
+    "name": "Go & Node Dev Container",
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
     "features": {
+        "ghcr.io/devcontainers/features/git:1": {},
         "ghcr.io/devcontainers/features/go:1": {
             "version": "1.25.0"
         },
-        "ghcr.io/devcontainers/features/python:1": {
-            "version": "3.13.7"
-        },
-        "ghcr.io/va-h/devcontainers-features/uv:1": {},
-        "ghcr.io/mrsimonemms/devcontainers/cobra-cli:1": {}
+        "ghcr.io/devcontainers/features/node:1": {
+            "nodeGypDependencies": true,
+            "version": "lts"
+        }
     },
-    "settings": {
-        "go.gopath": "/workspace/go",
-        "python.pythonPath": "/usr/local/bin/python3"
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "go.gopath": "/workspace/go",
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.fixAll.eslint": true
+                },
+                "files.autoSave": "onWindowChange"
+            },
+            "extensions": [
+                "golang.go",
+                "dbaeumer.vscode-eslint"
+            ]
+        }
     },
-    "extensions": [
-        "ms-python.python",
-        "golang.go"
-    ],
-    "postCreateCommand": "go version && python --version && cd python && uv sync",
+    "postCreateCommand": "go version && node --version",
     "forwardPorts": [
-        8000,
+        8000
     ],
     "remoteUser": "root"
 }
