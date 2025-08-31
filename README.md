@@ -18,7 +18,7 @@ Ollama should be installed on your system. The project uses the `codellama` mode
 ollama run codellama
 ```
 
-To download the python variant, you can run the following command
+As a side note, some models come with variants. For instance, if you want to download the python variant, you can run the following command
 ```
 ollama pull codellama:python
 ollama run codellama:python
