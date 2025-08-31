@@ -14,6 +14,13 @@ func NewLSPServer() *LSPServer {
 	}
 }
 
+func (s *LSPServer) serve() {
+	log.Println("LSP Server is now serving...")
+}
+
 func main() {
 	log.Println("Haiku LSP starting...")
+
+	server := NewLSPServer()
+	server.serve()
 }
