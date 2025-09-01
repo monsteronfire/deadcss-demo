@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 const ollamaBaseURL = "http://host.docker.internal:11434/api/"
@@ -83,8 +84,10 @@ func (s *LSPServer) serve() {
 }
 
 func main() {
-	log.Println("Haiku LSP starting...")
+	log.SetOutput(os.Stderr)
 
 	server := NewLSPServer()
+	log.Println("Haiku LSP starting...")
+
 	server.serve()
 }
