@@ -52,6 +52,7 @@ func (s *LSPServer) callOllama(prompt string) (string, error) {
 		bytes.NewBuffer(jsonData),
 	)
 	if err != nil {
+		log.Printf("Could not connect to Ollama service at %s: %v", ollamaBaseURL+"generate", err)
 		return "", err
 	}
 
