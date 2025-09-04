@@ -47,7 +47,7 @@ function activate(context) {
 
 	context.subscriptions.push(client);
 
-	// Command to manually trigger haiku generation
+	// Command to trigger haiku generation
 	const haikuCommand = vscode.commands.registerCommand(
 		'funchaiku.generateHaiku',
 		() => {

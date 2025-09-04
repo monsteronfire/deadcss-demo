@@ -21,7 +21,16 @@
         "command": "funchaiku.generateHaiku",
         "title": "Generate Haiku for Function"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "funchaiku.generateHaiku",
+          "when": "editorTextFocus",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "lint": "eslint .",
