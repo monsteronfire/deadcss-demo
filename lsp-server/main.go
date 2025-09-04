@@ -67,6 +67,15 @@ func (s *LSPServer) readMessage(reader *bufio.Reader) (*Message, error) {
 	}
 
 	// Read "Content Part"
+	content := make([]byte, contentLength)
+	_, err := io.ReadFull(reader, content)
+	if err != nil {
+		return nil, err
+	}
+
+	var msg Message
+	err = json.Unmarshal(content, &msg)
+	return &msg, err
 }
 
 func (s *LSPServer) writeMessage(write io.Writer, msg *Message) error {
