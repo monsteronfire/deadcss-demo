@@ -106,6 +106,21 @@ func (s *LSPServer) handleMessage(msg *Message) *Message {
 		json.Unmarshal(msg.Params.([]byte), &params)
 		s.documents[params.TextDocument.URI] = params.TextDocument.Text
 		return nil
+
+	case "textDocument/didChange":
+		var params struct {
+			TextDocument struct {
+				URI string `json:"uri"`
+			} `json:"textDocument"`
+			ContentChanges []struct {
+				Text string `json:"text"`
+			} `json:"contentChanges"`
+		}
+		json.Unmarshal(msg.Params.([]byte), &params)
+		if len(params.ContentChanges) > 0 {
+			s.documents[params.TextDocument.URI] = params.ContentChanges[0].Text
+		}
+		return nil
 	}
 
 	return nil
