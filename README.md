@@ -28,3 +28,27 @@ This project runs within a devcontainer, so the `ollama` CLI tool cannot be used
 ```
 curl http://host.docker.internal:11434/api/version
 ```
+
+## Building server into binary
+
+Inside the `lsp-server/` directory, build the binary
+
+```bash
+go build -o lsp-server /workspaces/haiku-lsp/lsp-server
+```
+
+Then create `.local/bin` directory
+```bash
+ mkdir -p $HOME/.local/bin
+ ```
+
+ Move binary into `.local/bin`
+ ```bash
+ mv lsp-server $HOME/.local/bin/
+ ```
+
+ Verify that it's available
+
+```bash
+which lsp-server
+```
