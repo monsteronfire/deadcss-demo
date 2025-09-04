@@ -83,6 +83,20 @@ func (s *LSPServer) writeMessage(write io.Writer, msg *Message) error {
 }
 
 func (s *LSPServer) handleMessage(msg *Message) *Message {
+	switch msg.Method {
+	case "initialize":
+		return &Message{
+			JSONRPC: "2.0",
+			ID:      msg.ID,
+			Result: map[string]interface{}{
+				"capabilities": map[string]interface{}{
+					"hoverProvider":      true,
+					"codeActionProvider": true,
+				},
+			},
+		}
+	}
+
 	return nil
 }
 
@@ -149,7 +163,7 @@ func (s *LSPServer) serve() {
 
 		response := s.handleMessage(msg)
 		if response != nil {
-			err = s.writeMessage(write, response)
+			err = s.writeMessage(writer, response)
 			if err != nil {
 				log.Printf("Error writing response: %v", err)
 				break
