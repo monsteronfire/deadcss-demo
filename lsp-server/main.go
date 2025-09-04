@@ -106,7 +106,35 @@ func (s *LSPServer) writeMessage(write io.Writer, msg *Message) error {
 }
 
 func (s *LSPServer) handleHover(params HoverParams) *HoverResult {
-	return nil
+	content, exists := s.documents[params.TextDocument.URI]
+	if !exists {
+		return nil
+	}
+
+	functionName := "bestFunctionEver"
+	if functionName == "" {
+		return &HoverResult{
+			Contents: MarkupContent{
+				Kind:  "markdown",
+				Value: "No function found at this position.",
+			},
+		}
+	}
+
+	prompt := fmt.Sprintf("Write a creative haiku inspired by a programming function called '%s'. Do not mention, reference, or use the function name or any part of it in the haiku. Instead, capture the essence or purpose of what such a function might do in code, using poetic and programming-themed language. Only return the haiku, nothing else. If you use the function name or any part of it, your answer is incorrect.", functionName)
+
+	haiku, err := s.callOllama(prompt)
+	if err != nil {
+		log.Printf("Ollama error: %v", err)
+		haiku = "Error calling AI\nSilent functions wait alone\nCode without poetry"
+	}
+
+	return &HoverResult{
+		Contents: MarkupContent{
+			Kind:  "markdown",
+			Value: fmt.Sprintf("**🌸 Function Haiku: `%s`**\n\n```\n%s\n```", functionName, strings.TrimSpace(haiku)),
+		},
+	}
 }
 
 func (s *LSPServer) handleMessage(msg *Message) *Message {
@@ -194,21 +222,6 @@ func (s *LSPServer) callOllama(prompt string) (string, error) {
 	}
 
 	return ollamaResp.Response, nil
-}
-
-func (s *LSPServer) serve__() {
-	log.Println("LSP Server is now serving...")
-
-	functionName := "handleHover"
-
-	prompt := fmt.Sprintf("Write a creative haiku inspired by a programming function called '%s'. Do not mention, reference, or use the function name or any part of it in the haiku. Instead, capture the essence or purpose of what such a function might do in code, using poetic and programming-themed language. Only return the haiku, nothing else. If you use the function name or any part of it, your answer is incorrect.", functionName)
-
-	haiku, err := s.callOllama(prompt)
-	if err != nil {
-		log.Fatalf("Error calling Ollama API: %v", err)
-	}
-
-	log.Println(haiku)
 }
 
 func (s *LSPServer) serve() {
