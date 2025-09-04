@@ -47,6 +47,26 @@ type MarkupContent struct {
 	Value string `json:"value"`
 }
 
+type CodeActionParams struct {
+	TextDocument TextDocumentIdentifier `json:"textDocument"`
+	Range        Range                  `json:"range"`
+	Context      CodeActionContext      `json:"context"`
+}
+
+type Range struct {
+	Start Position `json:"start"`
+	End   Position `json:"end"`
+}
+
+type CodeActionContext struct {
+	Diagnostics []interface{} `json:"diagnostics"`
+}
+
+type CodeAction struct {
+	Title string `json:"title"`
+	Kind  string `json:"kind"`
+}
+
 type OllamaRequest struct {
 	Model  string `json:"model"`
 	Prompt string `json:"prompt"`
@@ -137,6 +157,15 @@ func (s *LSPServer) handleHover(params HoverParams) *HoverResult {
 	}
 }
 
+func (s *LSPServer) handleCodeAction(params CodeActionParams) []CodeAction {
+	return []CodeAction{
+		{
+			Title: "Generate Haiku for Function",
+			Kind:  "quickfix",
+		},
+	}
+}
+
 func (s *LSPServer) handleMessage(msg *Message) *Message {
 	switch msg.Method {
 	case "initialize":
@@ -181,6 +210,16 @@ func (s *LSPServer) handleMessage(msg *Message) *Message {
 		var params HoverParams
 		json.Unmarshal(msg.Params.([]byte), &params)
 		result := s.handleHover(params)
+		return &Message{
+			JSONRPC: "2.0",
+			ID:      msg.ID,
+			Result:  result,
+		}
+
+	case "textDocument/codeAction":
+		var params CodeActionParams
+		json.Unmarshal(msg.Params.([]byte), &params)
+		result := s.handleCodeAction(params)
 		return &Message{
 			JSONRPC: "2.0",
 			ID:      msg.ID,
