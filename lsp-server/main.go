@@ -60,7 +60,7 @@ type Range struct {
 }
 
 type CodeActionContext struct {
-	Diagnostics []interface{} `json:"diagnostics"`
+	Diagnostics []any `json:"diagnostics"`
 }
 
 type CodeAction struct {
