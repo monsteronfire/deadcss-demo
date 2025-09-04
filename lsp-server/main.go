@@ -49,6 +49,10 @@ func (s *LSPServer) readMessage(reader *bufio.Reader) (*Message, error) {
 	return nil nil
 }
 
+func (s *LSPServer) handleMessage(msg *Message) *Message {
+	return nil
+}
+
 func (s *LSPServer) callOllama(prompt string) (string, error) {
 	requestBody := OllamaRequest{
 		Model:  modelName,
