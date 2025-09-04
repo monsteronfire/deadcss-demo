@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -125,13 +126,31 @@ func (s *LSPServer) writeMessage(write io.Writer, msg *Message) error {
 	return nil
 }
 
+func (s *LSPServer) extractFunctionNameAtPosition(content string, line, character int) string {
+	lines := strings.Split(content, "\n")
+	if line >= len(lines) {
+		return ""
+	}
+
+	funcRegex := regexp.MustCompile(`func\s+(\w+)|def\s+(\w+)|function\s+(\w+)`)
+
+	// Look around the cursor position for function definitions
+	for i := max(0, line-3); i <= min(len(lines)-1, line+3); i++ {
+		if matches := funcRegex.FindStringSubmatch(lines[i]); len(matches) > 1 {
+			return matches[1] // Return just the function name
+		}
+	}
+
+	return ""
+}
+
 func (s *LSPServer) handleHover(params HoverParams) *HoverResult {
 	content, exists := s.documents[params.TextDocument.URI]
 	if !exists {
 		return nil
 	}
 
-	functionName := "bestFunctionEver"
+	functionName := s.extractFunctionNameAtPosition(content, params.Position.Line, params.Position.Character)
 	if functionName == "" {
 		return &HoverResult{
 			Contents: MarkupContent{
@@ -285,6 +304,20 @@ func (s *LSPServer) serve() {
 			}
 		}
 	}
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
 
 func main() {
