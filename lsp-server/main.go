@@ -49,6 +49,10 @@ func (s *LSPServer) readMessage(reader *bufio.Reader) (*Message, error) {
 	return nil nil
 }
 
+func (s *LSPServer) writeMessage(write io.Writer, msg *Message) error {
+	return nil
+} 
+
 func (s *LSPServer) handleMessage(msg *Message) *Message {
 	return nil
 }
@@ -115,6 +119,13 @@ func (s *LSPServer) serve() {
 		}
 
 		response := s.handleMessage(msg)
+		if response != nil {
+			err = s.writeMessage(write, response)
+			if err != nil {
+				log.Printf("Error writing response: %v", err)
+				break
+			}
+		}
 	}
 }
 
