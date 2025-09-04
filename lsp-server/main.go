@@ -109,6 +109,10 @@ func (s *LSPServer) serve() {
 
 	for {
 		msg, err := s.readMessage(reader)
+		if err != nil {
+			log.Printf("Error reading message: %v", err)
+			break
+		}
 
 		response := s.handleMessage(msg)
 	}
