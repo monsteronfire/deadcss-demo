@@ -122,8 +122,20 @@ func (s *LSPServer) readMessage(reader *bufio.Reader) (*Message, error) {
 	return &msg, err
 }
 
-func (s *LSPServer) writeMessage(write io.Writer, msg *Message) error {
-	return nil
+func (s *LSPServer) writeMessage(writer io.Writer, msg *Message) error {
+	content, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	header := fmt.Sprintf("Content-Length: %d\r\n\r\n", len(content))
+	_, err = writer.Write([]byte(header))
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(content)
+	return err
 }
 
 func (s *LSPServer) extractFunctionNameAtPosition(content string, line, character int) string {
