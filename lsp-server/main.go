@@ -105,7 +105,7 @@ func (s *LSPServer) readMessage(reader *bufio.Reader) (*Message, error) {
 			break // End of headers
 		}
 
-		if strings.HasPrefix(line, "Content-Length:") {
+		if strings.HasPrefix(line, "Content-Length: ") {
 			fmt.Sscanf(line, "Content-Length: %d", &contentLength)
 		}
 	}
