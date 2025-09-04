@@ -95,6 +95,17 @@ func (s *LSPServer) handleMessage(msg *Message) *Message {
 				},
 			},
 		}
+
+	case "textDocument/didOpen":
+		var params struct {
+			TextDocument struct {
+				URI  string `json:"uri"`
+				Text string `json:"text"`
+			} `json:"textDocument"`
+		}
+		json.Unmarshal(msg.Params.([]byte), &params)
+		s.documents[params.TextDocument.URI] = params.TextDocument.Text
+		return nil
 	}
 
 	return nil
