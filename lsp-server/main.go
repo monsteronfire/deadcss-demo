@@ -5,18 +5,20 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 const ollamaBaseURL = "http://host.docker.internal:11434/api/"
 const modelName = "hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:latest"
 
 type Message struct {
-	JSONRPC string 		`json:"jsonrpc"`
+	JSONRPC string      `json:"jsonrpc"`
 	ID      interface{} `json:"id,omitempty"`
-	Method  string 		`json:"method"`
+	Method  string      `json:"method"`
 	Params  interface{} `json:"params,omitempty"`
 	Result  interface{} `json:"result,omitempty"`
 	Error   interface{} `json:"error,omitempty"`
@@ -46,12 +48,30 @@ func NewLSPServer() *LSPServer {
 }
 
 func (s *LSPServer) readMessage(reader *bufio.Reader) (*Message, error) {
-	return nil nil
+	// Read "Header Part"
+	contentLength := 0
+	for {
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			return nil, err
+		}
+
+		line = strings.TrimSpace(line)
+		if line == "" {
+			break // End of headers
+		}
+
+		if strings.HasPrefix(line, "Content-Length:") {
+			fmt.Sscanf(line, "Content-Length: %d", &contentLength)
+		}
+	}
+
+	// Read "Content Part"
 }
 
 func (s *LSPServer) writeMessage(write io.Writer, msg *Message) error {
 	return nil
-} 
+}
 
 func (s *LSPServer) handleMessage(msg *Message) *Message {
 	return nil
