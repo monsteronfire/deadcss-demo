@@ -1,7 +1,7 @@
 {
   "name": "funchaiku",
   "displayName": "funchaiku",
-  "description": "Get a haiku from your function name",
+  "description": "Get a haiku based on your function name",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.103.0"
@@ -9,13 +9,17 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:go",
+    "onLanguage:javascript",
+    "onLanguage:typescript"
+  ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "funchaiku.helloWorld",
-        "title": "Hello Wereld"
+        "command": "funchaiku.generateHaiku",
+        "title": "Generate Haiku for Function"
       }
     ]
   },

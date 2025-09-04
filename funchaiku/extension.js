@@ -1,6 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
+const { LanguageClient } = require('vscode-languageclient/node');
+
+let client;
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -14,21 +17,61 @@ function activate(context) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "funchaiku" is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('funchaiku.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello Wereld from funchaiku!');
-	});
+	const serverCommand = 'lsp-server';
 
-	context.subscriptions.push(disposable);
+	const serverOptions = {
+		command: serverCommand,
+		args: []
+	};
+
+	const clientOptions = {
+		documentSelector: [
+			{ scheme: 'file', language: 'go' },
+			{ scheme: 'file', language: 'javascript' },
+			{ scheme: 'file', language: 'typescript' },
+		],
+		synchronize: {
+			fileEvents: vscode.workspace.createFileSystemWatcher('**/*')
+		},
+	};
+
+	client = new LanguageClient(
+		'funchaiku',
+		'Funchaiku Language Server',
+		serverOptions,
+		clientOptions
+	);
+
+	client.start();
+
+	context.subscriptions.push(client);
+
+	// Command to manually trigger haiku generation
+	const haikuCommand = vscode.commands.registerCommand(
+		'funchaiku.generateHaiku',
+		() => {
+			const editor = vscode.window.activeTextEditor;
+			if (editor) {
+				const position = editor.selection.active;
+				vscode.commands.executeCommand(
+					'vscode.executeHoverProvider',
+					editor.document.uri,
+					position
+				)
+			}
+		}
+	);
+	context.subscriptions.push(haikuCommand);
 }
 
 // This method is called when your extension is deactivated
-function deactivate() { }
+function deactivate() {
+	if (!client) {
+		return;
+	}
+	return client.stop();
+}
 
 module.exports = {
 	activate,
