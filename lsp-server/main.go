@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -11,6 +12,15 @@ import (
 
 const ollamaBaseURL = "http://host.docker.internal:11434/api/"
 const modelName = "hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:latest"
+
+type Message struct {
+	JSONRPC string 		`json:"jsonrpc"`
+	ID      interface{} `json:"id,omitempty"`
+	Method  string 		`json:"method"`
+	Params  interface{} `json:"params,omitempty"`
+	Result  interface{} `json:"result,omitempty"`
+	Error   interface{} `json:"error,omitempty"`
+}
 
 type OllamaRequest struct {
 	Model  string `json:"model"`
@@ -33,6 +43,10 @@ func NewLSPServer() *LSPServer {
 	return &LSPServer{
 		documents: make(map[string]string),
 	}
+}
+
+func (s *LSPServer) readMessage(reader *bufio.Reader) (*Message, error) {
+	return nil nil
 }
 
 func (s *LSPServer) callOllama(prompt string) (string, error) {
@@ -68,7 +82,7 @@ func (s *LSPServer) callOllama(prompt string) (string, error) {
 	return ollamaResp.Response, nil
 }
 
-func (s *LSPServer) serve() {
+func (s *LSPServer) serve__() {
 	log.Println("LSP Server is now serving...")
 
 	functionName := "handleHover"
@@ -81,6 +95,19 @@ func (s *LSPServer) serve() {
 	}
 
 	log.Println(haiku)
+}
+
+func (s *LSPServer) serve() {
+	// receives messages from the Language Client
+	reader := bufio.NewReader(os.Stdin)
+	// sends messages to the Language Client
+	writer := os.Stdout
+
+	for {
+		msg, err := s.readMessage(reader)
+
+		response := s.handleMessage(msg)
+	}
 }
 
 func main() {
