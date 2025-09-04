@@ -24,6 +24,29 @@ type Message struct {
 	Error   interface{} `json:"error,omitempty"`
 }
 
+type TextDocumentIdentifier struct {
+	URI string `json:"uri"`
+}
+
+type Position struct {
+	Line      int `json:"line"`
+	Character int `json:"character"`
+}
+
+type HoverParams struct {
+	TextDocument TextDocumentIdentifier `json:"textDocument"`
+	Position     Position               `json:"position"`
+}
+
+type HoverResult struct {
+	Contents MarkupContent `json:"contents"`
+}
+
+type MarkupContent struct {
+	Kind  string `json:"kind"`
+	Value string `json:"value"`
+}
+
 type OllamaRequest struct {
 	Model  string `json:"model"`
 	Prompt string `json:"prompt"`
@@ -82,6 +105,10 @@ func (s *LSPServer) writeMessage(write io.Writer, msg *Message) error {
 	return nil
 }
 
+func (s *LSPServer) handleHover(params HoverParams) *HoverResult {
+	return nil
+}
+
 func (s *LSPServer) handleMessage(msg *Message) *Message {
 	switch msg.Method {
 	case "initialize":
@@ -121,6 +148,16 @@ func (s *LSPServer) handleMessage(msg *Message) *Message {
 			s.documents[params.TextDocument.URI] = params.ContentChanges[0].Text
 		}
 		return nil
+
+	case "textDocument/hover":
+		var params HoverParams
+		json.Unmarshal(msg.Params.([]byte), &params)
+		result := s.handleHover(params)
+		return &Message{
+			JSONRPC: "2.0",
+			ID:      msg.ID,
+			Result:  result,
+		}
 	}
 
 	return nil
