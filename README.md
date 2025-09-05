@@ -52,3 +52,9 @@ Then create `.local/bin` directory
 ```bash
 which lsp-server
 ```
+
+## Debugging
+
+You can view the logs in the `Output`. To open the `Output` panel, ensure that you're in the `Extension Development Host` and go to `View > Output` in the top navbar. You should be able to select `Funchaiku Language Server` in the dropdown. Throw a bunch of `log.Println()` in the places you need to debug.
+
+You will need to rebuild the go binary whenever you make changes, then move it to the appropriate folder using the instructions above.
