@@ -151,7 +151,11 @@ func (s *LSPServer) extractFunctionNameAtPosition(content string, line, characte
 	// Look around the cursor position for function definitions
 	for i := max(0, line-3); i <= min(len(lines)-1, line+3); i++ {
 		if matches := funcRegex.FindStringSubmatch(lines[i]); len(matches) > 1 {
-			return matches[1] // Return just the function name
+			for _, m := range matches[1:] {
+				if m != "" {
+					return m
+				}
+			}
 		}
 	}
 
