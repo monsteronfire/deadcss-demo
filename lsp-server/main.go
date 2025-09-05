@@ -125,12 +125,14 @@ func (s *LSPServer) readMessage(reader *bufio.Reader) (*Message, error) {
 func (s *LSPServer) writeMessage(writer io.Writer, msg *Message) error {
 	content, err := json.Marshal(msg)
 	if err != nil {
+		log.Printf("Error marshaling message: %v", err)
 		return err
 	}
 
 	header := fmt.Sprintf("Content-Length: %d\r\n\r\n", len(content))
 	_, err = writer.Write([]byte(header))
 	if err != nil {
+		log.Printf("Error writing header: %v", err)
 		return err
 	}
 
@@ -159,7 +161,12 @@ func (s *LSPServer) extractFunctionNameAtPosition(content string, line, characte
 func (s *LSPServer) handleHover(params HoverParams) *HoverResult {
 	content, exists := s.documents[params.TextDocument.URI]
 	if !exists {
-		return nil
+		return &HoverResult{
+			Contents: MarkupContent{
+				Kind:  "markdown",
+				Value: "No content available for this document.",
+			},
+		}
 	}
 
 	functionName := s.extractFunctionNameAtPosition(content, params.Position.Line, params.Position.Character)
@@ -207,6 +214,10 @@ func (s *LSPServer) handleMessage(msg *Message) *Message {
 				"capabilities": map[string]interface{}{
 					"hoverProvider":      true,
 					"codeActionProvider": true,
+					"textDocumentSync": map[string]interface{}{
+						"openClose": true,
+						"change":    1,
+					},
 				},
 			},
 		}
