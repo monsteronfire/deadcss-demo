@@ -11,6 +11,9 @@
             "version": "lts"
         }
     },
+    "remoteEnv": {
+        "GOMODCACHE": "/workspace/go/pkg/mod"
+    },
     "customizations": {
         "vscode": {
             "settings": {
