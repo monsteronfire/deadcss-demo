@@ -30,10 +30,12 @@ function activate(context) {
 			{ scheme: 'file', language: 'go' },
 			{ scheme: 'file', language: 'javascript' },
 			{ scheme: 'file', language: 'typescript' },
+			{ scheme: 'file', language: 'python' },
 		],
 		synchronize: {
 			fileEvents: vscode.workspace.createFileSystemWatcher('**/*')
 		},
+		traceOutputChannel: vscode.window.createOutputChannel('Funchaiku LSP Trace'),
 	};
 
 	client = new LanguageClient(
