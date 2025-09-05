@@ -19,7 +19,7 @@ const modelName = "hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:latest"
 type Message struct {
 	JSONRPC string      `json:"jsonrpc"`
 	ID      interface{} `json:"id,omitempty"`
-	Method  string      `json:"method"`
+	Method  string      `json:"method,omitempty"`
 	Params  interface{} `json:"params,omitempty"`
 	Result  interface{} `json:"result,omitempty"`
 	Error   interface{} `json:"error,omitempty"`
@@ -218,7 +218,8 @@ func (s *LSPServer) handleMessage(msg *Message) *Message {
 				Text string `json:"text"`
 			} `json:"textDocument"`
 		}
-		json.Unmarshal(msg.Params.([]byte), &params)
+		paramsBytes, _ := json.Marshal(msg.Params)
+		json.Unmarshal(paramsBytes, &params)
 		s.documents[params.TextDocument.URI] = params.TextDocument.Text
 		return nil
 
@@ -231,7 +232,8 @@ func (s *LSPServer) handleMessage(msg *Message) *Message {
 				Text string `json:"text"`
 			} `json:"contentChanges"`
 		}
-		json.Unmarshal(msg.Params.([]byte), &params)
+		paramsBytes, _ := json.Marshal(msg.Params)
+		json.Unmarshal(paramsBytes, &params)
 		if len(params.ContentChanges) > 0 {
 			s.documents[params.TextDocument.URI] = params.ContentChanges[0].Text
 		}
@@ -239,7 +241,8 @@ func (s *LSPServer) handleMessage(msg *Message) *Message {
 
 	case "textDocument/hover":
 		var params HoverParams
-		json.Unmarshal(msg.Params.([]byte), &params)
+		paramsBytes, _ := json.Marshal(msg.Params)
+		json.Unmarshal(paramsBytes, &params)
 		result := s.handleHover(params)
 		return &Message{
 			JSONRPC: "2.0",
@@ -249,7 +252,8 @@ func (s *LSPServer) handleMessage(msg *Message) *Message {
 
 	case "textDocument/codeAction":
 		var params CodeActionParams
-		json.Unmarshal(msg.Params.([]byte), &params)
+		paramsBytes, _ := json.Marshal(msg.Params)
+		json.Unmarshal(paramsBytes, &params)
 		result := s.handleCodeAction(params)
 		return &Message{
 			JSONRPC: "2.0",
