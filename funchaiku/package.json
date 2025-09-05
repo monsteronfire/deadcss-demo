@@ -20,12 +20,21 @@
       {
         "command": "funchaiku.generateHaiku",
         "title": "Generate Haiku for Function"
+      },
+      {
+        "command": "funchaiku.showHaiku",
+        "title": "Show Last Generated Haiku"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "command": "funchaiku.generateHaiku",
+          "when": "editorTextFocus",
+          "group": "navigation"
+        },
+        {
+          "command": "funchaiku.showHaiku",
           "when": "editorTextFocus",
           "group": "navigation"
         }

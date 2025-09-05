@@ -63,6 +63,32 @@ function activate(context) {
 		}
 	);
 	context.subscriptions.push(haikuCommand);
+
+	const showHaikuCommand = vscode.commands.registerCommand(
+		'funchaiku.showHaiku',
+		async () => {
+			console.log('funchaiku.showHaiku command triggered');
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) return
+
+			const position = editor.selection.active;
+
+			const hoverResult = await vscode.commands.executeCommand(
+				'vscode.executeHoverProvider',
+				editor.document.uri,
+				position
+			)
+
+			console.log('hover result: ', hoverResult);
+
+			if (hoverResult && hoverResult[0]) {
+				const content = hoverResult[0].contents[0].value;
+				vscode.window.showInformationMessage(`Content 🌸 ${content}`);
+			}
+		}
+	)
+
+	context.subscriptions.push(showHaikuCommand);
 }
 
 // This method is called when your extension is deactivated
